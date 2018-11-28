@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 
 import com.soecode.wxtools.api.WxConfig;
-import com.soecode.wxtools.api.WxConsts;
 import com.soecode.wxtools.exception.AesException;
 import com.soecode.wxtools.util.crypto.WXBizMsgCrypt;
 import com.soecode.wxtools.util.xml.XStreamCDataConverter;
@@ -380,7 +379,7 @@ public class WxXmlMessage {
 
 	public static WxXmlMessage decryptMsg(String encryptedXml, WxConfig wxConfig,
 			String timestamp, String nonce, String msgSignature) throws AesException {
-		WXBizMsgCrypt pc = new WXBizMsgCrypt(WxConfig.getInstance().getToken(), WxConfig.getInstance().getAesKey(), WxConfig.getInstance().getAppId());
+		WXBizMsgCrypt pc = new WXBizMsgCrypt(wxConfig.getToken(), wxConfig.getAesKey(), wxConfig.getAppId());
 		String plainText = pc.decryptMsg(msgSignature, timestamp, nonce, encryptedXml);
 		return fromXml(plainText);
 	}

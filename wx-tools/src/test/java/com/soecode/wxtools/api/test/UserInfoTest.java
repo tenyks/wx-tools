@@ -1,6 +1,7 @@
 package com.soecode.wxtools.api.test;
 
 import com.soecode.wxtools.api.IService;
+import com.soecode.wxtools.api.WxConfig;
 import com.soecode.wxtools.api.WxConsts;
 import com.soecode.wxtools.api.WxService;
 import com.soecode.wxtools.bean.WxUserList;
@@ -15,7 +16,7 @@ import org.junit.Test;
 
 @Ignore
 public class UserInfoTest {
-  IService iService = new WxService();
+  IService iService = new WxService(WxConfig.getInstance());
 
 
   @Test

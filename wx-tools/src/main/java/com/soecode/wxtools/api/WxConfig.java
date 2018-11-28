@@ -59,6 +59,7 @@ public class WxConfig {
 		System.out.println("load wx.properties success");
 	}
 
+	@Deprecated
 	public static synchronized WxConfig getInstance(){
 		if(config == null){
 			config = new WxConfig();

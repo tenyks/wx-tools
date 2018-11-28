@@ -1,6 +1,7 @@
 package com.soecode.wxtools.api.test;
 
 import com.soecode.wxtools.api.IService;
+import com.soecode.wxtools.api.WxConfig;
 import com.soecode.wxtools.api.WxConsts;
 import com.soecode.wxtools.api.WxService;
 import com.soecode.wxtools.bean.KfAccount;
@@ -17,7 +18,7 @@ import org.junit.Test;
 
 @Ignore
 public class KfAccountTest {
-  IService iService = new WxService();
+  IService iService = new WxService(WxConfig.getInstance());
 
   @Test
   public void should_add_kf_account_successfully() throws Exception {

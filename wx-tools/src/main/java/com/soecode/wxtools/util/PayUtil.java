@@ -12,10 +12,10 @@ import com.soecode.wxtools.util.crypto.MD5;
 
 public class PayUtil {
 
-	public static WxUnifiedOrder createPayInfo(PayOrderInfo order, String notifyUrl , String openid) {
+	public static WxUnifiedOrder createPayInfo(WxConfig config, PayOrderInfo order, String notifyUrl , String openid) {
 		Map<String, String> payinfo = new HashMap<>();
-		payinfo.put("appid", WxConfig.getInstance().getAppId());
-		payinfo.put("mch_id", WxConfig.getInstance().getMchId());
+		payinfo.put("appid", config.getAppId());
+		payinfo.put("mch_id", config.getMchId());
 		payinfo.put("device_info", "WEB");
 		payinfo.put("nonce_str", StringUtils.randomStr(32));
 		payinfo.put("body", order.getOrderName());
@@ -27,7 +27,7 @@ public class PayUtil {
 		payinfo.put("notify_url", notifyUrl);
 		payinfo.put("trade_type", order.getTradeType());
 		payinfo.put("openid", openid);
-		payinfo.put("sign", createSign(payinfo, WxConfig.getInstance().getApiKey()));
+		payinfo.put("sign", createSign(payinfo, config.getApiKey()));
 		
 		WxUnifiedOrder pay = new WxUnifiedOrder();
 		pay.setAppid(payinfo.get("appid"));

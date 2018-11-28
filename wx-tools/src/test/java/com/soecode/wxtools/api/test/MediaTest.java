@@ -1,6 +1,7 @@
 package com.soecode.wxtools.api.test;
 
 import com.soecode.wxtools.api.IService;
+import com.soecode.wxtools.api.WxConfig;
 import com.soecode.wxtools.api.WxConsts;
 import com.soecode.wxtools.api.WxService;
 import com.soecode.wxtools.bean.WxNewsInfo;
@@ -14,7 +15,7 @@ import org.junit.Test;
 @Ignore
 public class MediaTest {
 
-  IService iService = new WxService();
+  IService iService = new WxService(WxConfig.getInstance());
 
   @Test
   public void should_upload_tmp_media_successfully() throws Exception {

@@ -72,17 +72,22 @@ import com.soecode.wxtools.util.http.VideoDownloadPostRequestExecutor;
 public class WxService implements IService {
 
   protected static final Object globalAccessTokenRefreshLock = new Object();
+
   protected static final Object globalJsapiTicketRefreshLock = new Object();
+
   protected CloseableHttpClient httpClient;
 
-  public WxService() {
-    httpClient = HttpClients.createDefault();
+  private WxConfig config;
+
+  public WxService(WxConfig config) {
+    this.httpClient = HttpClients.createDefault();
+    this.config = config;
   }
 
   @Override
   public boolean checkSignature(String signature, String timestamp, String nonce, String echostr) {
     try {
-      return SHA1.gen(WxConfig.getInstance().getToken(), timestamp, nonce).equals(signature);
+      return SHA1.gen(config.getToken(), timestamp, nonce).equals(signature);
     } catch (Exception e) {
       return false;
     }
@@ -96,18 +101,18 @@ public class WxService implements IService {
   @Override
   public String getAccessToken(boolean forceRefresh) throws WxErrorException {
     if (forceRefresh) {
-      WxConfig.getInstance().expireAccessToken();
+        config.expireAccessToken();
     }
-    if (WxConfig.getInstance().isAccessTokenExpired()) {
+    if (config.isAccessTokenExpired()) {
       synchronized (globalAccessTokenRefreshLock) {
-        if (WxConfig.getInstance().isAccessTokenExpired()) {
+        if (config.isAccessTokenExpired()) {
           String url = WxConsts.URL_GET_ACCESSTOEKN
-              .replace("APPID", WxConfig.getInstance().getAppId())
-              .replace("APPSECRET", WxConfig.getInstance().getAppSecret());
+              .replace("APPID", config.getAppId())
+              .replace("APPSECRET", config.getAppSecret());
           try {
             String resultContent = get(url, null);
             WxAccessToken accessToken = WxAccessToken.fromJson(resultContent);
-            WxConfig.getInstance()
+            config
                 .updateAccessToken(accessToken.getAccess_token(), accessToken.getExpires_in());
             System.out.println("[wx-tools]update accessToken success. accessToken:" + accessToken
                 .getAccess_token());
@@ -117,7 +122,7 @@ public class WxService implements IService {
         }
       }
     }
-    return WxConfig.getInstance().getAccessToken();
+    return config.getAccessToken();
   }
 
   @Override
@@ -578,7 +583,7 @@ public class WxService implements IService {
   @Override
   public String oauth2buildAuthorizationUrl(String redirectUri, String scope, String state) {
     redirectUri = URIUtil.encodeURIComponent(redirectUri);
-    String url = WxConsts.URL_OAUTH2_GET_CODE.replace("APPID", WxConfig.getInstance().getAppId())
+    String url = WxConsts.URL_OAUTH2_GET_CODE.replace("APPID", config.getAppId())
         .replace("REDIRECT_URI", redirectUri).replace("SCOPE", scope).replace("STATE", state);
     return url;
   }
@@ -587,8 +592,8 @@ public class WxService implements IService {
   public WxOAuth2AccessTokenResult oauth2ToGetAccessToken(String code) throws WxErrorException {
     WxOAuth2AccessTokenResult result = null;
     String url = WxConsts.URL_OAUTH2_GET_ACCESSTOKEN
-        .replace("APPID", WxConfig.getInstance().getAppId())
-        .replace("SECRET", WxConfig.getInstance().getAppSecret()).replace("CODE", code);
+        .replace("APPID", config.getAppId())
+        .replace("SECRET", config.getAppSecret()).replace("CODE", code);
     String getResult = get(url, null);
     try {
       result = WxOAuth2AccessTokenResult.fromJson(getResult);
@@ -603,7 +608,7 @@ public class WxService implements IService {
       throws WxErrorException {
     WxOAuth2AccessTokenResult result = null;
     String url = WxConsts.URL_OAUTH2_GET_REFRESH_ACCESSTOKEN
-        .replace("APPID", WxConfig.getInstance().getAppId())
+        .replace("APPID", config.getAppId())
         .replace("REFRESH_TOKEN", refreshToken);
     String getResult = get(url, null);
     try {
@@ -689,11 +694,11 @@ public class WxService implements IService {
 
   public String getJsapiTicket(boolean forceRefresh) throws WxErrorException {
     if (forceRefresh) {
-      WxConfig.getInstance().expireJsapiTicket();
+      config.expireJsapiTicket();
     }
-    if (WxConfig.getInstance().isJsapiTicketExpired()) {
+    if (config.isJsapiTicketExpired()) {
       synchronized (globalJsapiTicketRefreshLock) {
-        if (WxConfig.getInstance().isJsapiTicketExpired()) {
+        if (config.isJsapiTicketExpired()) {
           String url = WxConsts.URL_GET_JS_API_TICKET.replace("ACCESS_TOKEN", getAccessToken());
           String responseContent = execute(new SimpleGetRequestExecutor(), url, null);
           ObjectMapper mapper = new ObjectMapper();
@@ -706,7 +711,7 @@ public class WxService implements IService {
             }
             String jsapiTicket = node.get("ticket").asText();
             int expiresInSeconds = node.get("expires_in").asInt();
-            WxConfig.getInstance().updateJsapiTicket(jsapiTicket, expiresInSeconds);
+            config.updateJsapiTicket(jsapiTicket, expiresInSeconds);
             System.out.println("[wx-tools]update jsapiTicket success. ticket: " + jsapiTicket);
           } catch (Exception e) {
             throw new WxErrorException("[wx-tools]getJsapiTicket failure.");
@@ -714,7 +719,7 @@ public class WxService implements IService {
         }
       }
     }
-    return WxConfig.getInstance().getJsapiTicket();
+    return config.getJsapiTicket();
   }
 
   public WxJsapiConfig createJsapiConfig(String url, List<String> jsApiList)
@@ -836,8 +841,8 @@ public class WxService implements IService {
     map.put("nonceStr", ivp.getNonceStr());
     map.put("package", "prepay_id=" + ivp.getPrepayId());
     map.put("signType", ivp.getSignType());
-    ivp.setPaySign(PayUtil.createSign(map, WxConfig.getInstance().getApiKey()));
-    ;
+    ivp.setPaySign(PayUtil.createSign(map, config.getApiKey()));
+
     return ivp;
   }
 
