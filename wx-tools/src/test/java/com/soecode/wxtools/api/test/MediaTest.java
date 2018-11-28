@@ -15,7 +15,7 @@ import org.junit.Test;
 @Ignore
 public class MediaTest {
 
-  IService iService = new WxService(WxConfig.getInstance());
+  IService iService = new WxService(WxConfigTest.Config);
 
   @Test
   public void should_upload_tmp_media_successfully() throws Exception {

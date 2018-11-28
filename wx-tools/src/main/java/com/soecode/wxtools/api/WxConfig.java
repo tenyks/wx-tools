@@ -1,16 +1,8 @@
 package com.soecode.wxtools.api;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 import com.soecode.wxtools.bean.WxAccessToken;
-import com.soecode.wxtools.exception.WxErrorException;
-import com.soecode.wxtools.util.StringUtils;
 
 public class WxConfig {
-	private static final String configFile = "/wx.properties";
-	private static WxConfig config = null;
 
 	private volatile String appId;
 	private volatile String appSecret;
@@ -23,49 +15,26 @@ public class WxConfig {
 	private volatile long expiresTime;
 	private volatile String jsapiTicket;
 	private volatile long jsapiTicketExpiresTime;
-	
-	public WxConfig() {
-		Properties p = new Properties();
-		InputStream inStream = this.getClass().getResourceAsStream(configFile);
-		if(inStream == null){
-			try {
-				throw new WxErrorException("Can't find file");
-			} catch (WxErrorException e) {
-				e.printStackTrace();
-			}
-		}
-		try {
-			p.load(inStream);
-			this.appId = p.getProperty("wx.appId");
-            if(StringUtils.isNotBlank(this.appId)) this.appId = this.appId.trim();
-            this.appSecret = p.getProperty("wx.appSecret");
-            if(StringUtils.isNotBlank(this.appSecret)) this.appSecret = this.appSecret.trim();
-            this.token = p.getProperty("wx.token");
-            if(StringUtils.isNotBlank(this.token)) this.token = this.token.trim();
-            this.aesKey = p.getProperty("wx.aesKey");
-            if(StringUtils.isNotBlank(this.aesKey)) this.aesKey = this.aesKey.trim();
-            this.mchId = p.getProperty("wx.mchId");
-            if(StringUtils.isNotBlank(this.mchId)) this.mchId = this.mchId.trim();
-            this.apiKey = p.getProperty("wx.apiKey");
-            if(StringUtils.isNotBlank(this.apiKey)) this.apiKey = this.apiKey.trim();
-			inStream.close();
-		} catch (IOException e) {
-			try {
-				throw new WxErrorException("load wx.properties error,class, can't find wx.properties");
-			} catch (WxErrorException e1) {
-				e1.printStackTrace();
-			}
-		}
-		System.out.println("load wx.properties success");
-	}
 
-	@Deprecated
-	public static synchronized WxConfig getInstance(){
-		if(config == null){
-			config = new WxConfig();
-		}
-		return config;
-	}
+
+	public WxConfig(String appId, String appSecret) {
+        this(appId, appSecret, null);
+    }
+
+    public WxConfig(String appId, String appSecret, String token) {
+        this.appId = appId;
+        this.appSecret = appSecret;
+        this.token = token;
+    }
+
+    public WxConfig(String appId, String appSecret, String token, String aesKey, String mchId, String apiKey) {
+        this.appId = appId;
+        this.appSecret = appSecret;
+        this.token = token;
+        this.aesKey = aesKey;
+        this.mchId = mchId;
+        this.apiKey = apiKey;
+    }
 	
 	public String getAccessToken() {
 		return accessToken;

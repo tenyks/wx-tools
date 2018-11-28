@@ -18,7 +18,7 @@ import org.junit.Test;
 
 @Ignore
 public class KfAccountTest {
-  IService iService = new WxService(WxConfig.getInstance());
+  IService iService = new WxService(WxConfigTest.Config);
 
   @Test
   public void should_add_kf_account_successfully() throws Exception {

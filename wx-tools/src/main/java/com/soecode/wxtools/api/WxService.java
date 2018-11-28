@@ -814,7 +814,7 @@ public class WxService implements IService {
   public InvokePay unifiedOrder(PayOrderInfo order, String notifyUrl, String openid)
       throws WxErrorException {
     InvokePay ivp = new InvokePay();
-    WxUnifiedOrder payinfo = PayUtil.createPayInfo(order, notifyUrl, openid);
+    WxUnifiedOrder payinfo = PayUtil.createPayInfo(config, order, notifyUrl, openid);
     String postResult = null;
     try {
       postResult = post(WxConsts.URL_PAY_UNIFIEORDER, payinfo.toXml());

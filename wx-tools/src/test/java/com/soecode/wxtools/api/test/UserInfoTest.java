@@ -16,7 +16,7 @@ import org.junit.Test;
 
 @Ignore
 public class UserInfoTest {
-  IService iService = new WxService(WxConfig.getInstance());
+  IService iService = new WxService(WxConfigTest.Config);
 
 
   @Test

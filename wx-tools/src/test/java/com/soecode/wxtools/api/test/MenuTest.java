@@ -16,7 +16,7 @@ import org.junit.Test;
 @Ignore
 public class MenuTest {
 
-  IService iService = new WxService(WxConfig.getInstance());
+  IService iService = new WxService(WxConfigTest.Config);
 
   @Test
   public void should_create_normal_menu_successfully() throws Exception {

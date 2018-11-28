@@ -16,7 +16,7 @@ import org.junit.Test;
 @Ignore
 public class MessageTest {
 
-  IService iService = new WxService(WxConfig.getInstance());
+  IService iService = new WxService(WxConfigTest.Config);
 
   @Test
   public void should_preview_send_news_to_user() throws Exception {
