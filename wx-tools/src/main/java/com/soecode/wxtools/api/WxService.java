@@ -731,6 +731,7 @@ public class WxService implements IService {
       String signature = SHA1.genWithAmple("noncestr=" + noncestr,
           "jsapi_ticket=" + jsapiTicket, "timestamp=" + timestamp, "url=" + url);
       WxJsapiConfig jsapiConfig = new WxJsapiConfig();
+      jsapiConfig.setAppid(config.getAppId());
       jsapiConfig.setTimestamp(timestamp);
       jsapiConfig.setNoncestr(noncestr);
       jsapiConfig.setUrl(url);
